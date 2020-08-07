@@ -21,6 +21,7 @@ axiosInstance.interceptors.response.use((response) => {
   return response
 }, (error) => {
   const { response } = error
+  console.log(error)
   if (response.status === 404) {
     router.replace('/404')
   }
