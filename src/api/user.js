@@ -1,15 +1,11 @@
 import request from './config'
 
-const getAll = (params) => request.get('users', { params })
-const getOne = (id) => request.get(`users/${id}`)
-const create = (data) => request.post('users', data)
-const updateOne = (id, data) => request.put(`users/${id}`, data)
-const deleteOne = (id) => request.delete(`users/${id}`)
+export const apiUserGetAll = (params) => request.get('users', { params })
 
-export default {
-  getAll,
-  getOne,
-  create,
-  updateOne,
-  deleteOne
-}
+export const apiUserGet = (id) => request.get(`users/${id}`)
+
+export const apiUserPost = (data) => request.post('users', data)
+
+export const apiUserPut = (id, data) => request.put(`users/${id}`, data)
+
+export const apiUserDelete = (id) => request.delete(`users/${id}`)

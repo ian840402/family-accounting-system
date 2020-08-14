@@ -31,7 +31,7 @@ const routes = [
     component: () => import('@/views/user/edit.vue')
   },
   {
-    path: '/user/edit',
+    path: '/user/edit/:id',
     name: 'UserEdit',
     component: () => import('@/views/user/edit.vue')
   },
@@ -52,7 +52,7 @@ const routes = [
     component: () => import('@/views/account/edit.vue')
   },
   {
-    path: '/account/edit',
+    path: '/account/edit/:id',
     name: 'AccountEdit',
     component: () => import('@/views/account/edit.vue')
   },
@@ -73,7 +73,7 @@ const routes = [
     component: () => import('@/views/record/edit.vue')
   },
   {
-    path: '/record/edit',
+    path: '/record/edit/:id',
     name: 'RecordEdit',
     component: () => import('@/views/record/edit.vue')
   }

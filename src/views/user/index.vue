@@ -1,7 +1,7 @@
 <template lang="pug">
   .list-page
-    .list-control-wrap
-      router-link(to="user/add").add-new 新增
+    h1.page-title 使用者管理
+    v-btn(to="/user/add") 新增
     .list-table-wrap
       v-data-table(
         :headers="tableConfig.header"
@@ -13,11 +13,9 @@
         hide-default-footer)
         template(v-slot:item.activity="{ item }")
           .activity-wrap
-            .view
-              router-link(:to="`user/info/${item.id}`") 檢視
-            .edit
-              router-link(:to="`user/edit/${item.id}`") 編輯
-            .delete(@click="deleteEvent(item.id)") 刪除
+            v-btn(:to="`user/info/${item.id}`") 檢視
+            v-btn(:to="`user/edit/${item.id}`") 編輯
+            v-btn(@click="deleteEvent(item.id)") 刪除
       v-pagination(
         v-model="pagination.currentPage"
         :length="pagination.lastPage"
@@ -27,7 +25,7 @@
 </template>
 
 <script>
-import apiUser from '@/api/user'
+import { apiUserGetAll, apiUserDelete } from '@/api/user'
 
 export default {
   data () {
@@ -64,14 +62,14 @@ export default {
   methods: {
     async getData () {
       this.tableConfig.loading = true
-      const { data } = await apiUser.getAll(this.apiParams)
+      const { data } = await apiUserGetAll(this.apiParams)
       this.listData = data.data
       this.pagination.totalPage = data.total
       this.pagination.lastPage = data.last_page
       this.tableConfig.loading = false
     },
     async deleteEvent (id) {
-      await apiUser.deleteOne(id)
+      await apiUserDelete(id)
       if (this.listData.length % this.pagination.perPage === 1 &&
         this.pagination.currentPage > 1) {
         this.pagination.currentPage--
