@@ -41,7 +41,7 @@ export default {
         loading: true
       },
       pagination: {
-        perPage: 2,
+        perPage: 10,
         currentPage: 1,
         totalPage: 0,
         lastPage: 1

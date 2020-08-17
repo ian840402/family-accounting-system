@@ -20,8 +20,8 @@ export default {
       infoData: {}
     }
   },
-  created () {
-    this.getData()
+  async created () {
+    await this.getData()
   },
   methods: {
     async getData () {

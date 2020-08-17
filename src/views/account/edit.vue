@@ -1,6 +1,6 @@
 <template lang="pug">
   .edit-page
-    h1.page-title 帳戶管理 - {{ pageMode === 'UserEdit' ? '編輯' : '新增' }}
+    h1.page-title 帳戶管理 - {{ pageMode === 'AccountEdit' ? '編輯' : '新增' }}
     v-btn(@click="$router.go(-1)") 上一頁
     v-form
       v-text-field(v-model="formData.name" label="名稱" placeholder="請輸入名稱")
@@ -8,7 +8,8 @@
       v-select(v-model="formData.user_id" label="使用者" :items="userData" item-text="name" item-value="id")
       v-text-field(v-model="formData.init_money" label="初始金額" placeholder="請輸入初始金額" prefix="$")
       v-textarea(v-model="formData.description" label="備註" placeholder="請輸入備註" :clearable="true" :dense="true")
-      v-btn(@click="submit_event") 儲存
+      v-btn(v-if="pageMode === 'AccountEdit'" @click="updateHandler" :loading="status.loading") 儲存
+      v-btn(v-else @click="creatHandler" :loading="status.loading") 儲存
     v-snackbar(v-model="status.success" color="success" timeout="1500" top) 儲存成功
 </template>
 
@@ -28,7 +29,8 @@ export default {
         description: ''
       },
       status: {
-        success: false
+        success: false,
+        loading: false
       }
     }
   },
@@ -40,20 +42,40 @@ export default {
   async created () {
     const { data } = await apiUserGetAll()
     this.userData = data.data
-    if (this.pageMode === 'AccountEdit') this.getData()
+    if (this.pageMode === 'AccountEdit') await this.getData()
   },
   methods: {
     async getData () {
-      const { data } = await apiAccountGet(this.$route.params.id)
-      this.formData.name = data.name
-      this.formData.description = data.description
+      const id = this.$route.params.id
+      const { data } = await apiAccountGet(id)
+      this.formData = data
     },
-    async submit_event () {
-      this.pageMode === 'AccountEdit' ? await apiAccountPut(this.formData) : await apiAccountPost(this.formData)
-      this.status.success = true
-      setTimeout(() => {
-        this.$router.push('/user')
-      }, 1500)
+    async creatHandler () {
+      this.status.loading = true
+      await apiAccountPost(this.formData)
+      .then((res) => {
+        this.status.success = true
+        setTimeout(() => {
+          this.$router.push('/account')
+        }, 1000)
+      })
+      .catch((err) => {
+        this.status.loading = false
+      })
+    },
+    async updateHandler () {
+      const id = this.$route.params.id
+      this.status.loading = true
+      await apiAccountPut(id, this.formData)
+      .then((res) => {
+        this.status.success = true
+        setTimeout(() => {
+          this.$router.push('/account')
+        }, 1000)
+      })
+      .catch((err) => {
+        this.status.loading = false
+      })
     }
   }
 }
