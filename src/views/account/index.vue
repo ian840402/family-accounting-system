@@ -15,7 +15,7 @@
           .activity-wrap
             v-btn(:to="`account/info/${item.id}`") 檢視
             v-btn(:to="`account/edit/${item.id}`") 編輯
-            v-btn(@click="deleteEvent(item.id)") 刪除
+            v-btn(@click="deleteHandler(item.id)") 刪除
       v-pagination(
         v-model="pagination.currentPage"
         :length="pagination.lastPage"
@@ -69,7 +69,7 @@ export default {
       this.pagination.lastPage = data.last_page
       this.tableConfig.loading = false
     },
-    async deleteEvent (id) {
+    async deleteHandler (id) {
       await apiAccountDelete(id)
       if (this.listData.length % this.pagination.perPage === 1 &&
         this.pagination.currentPage > 1) {

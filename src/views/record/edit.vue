@@ -25,7 +25,7 @@ export default {
       accountData: [],
       recordTypeData: [],
       formData: {
-        is_income: '',
+        is_income: true,
         type_id: null,
         user_id: null,
         account_id: null,
@@ -56,35 +56,35 @@ export default {
   methods: {
     async getData () {
       const id = this.$route.params.id
-      const { data } = await apiAccountGet(id)
+      const { data } = await apiRecordGet(id)
       this.formData = data
     },
     async creatHandler () {
       this.status.loading = true
-      await apiAccountPost(this.formData)
-      .then((res) => {
-        this.status.success = true
-        setTimeout(() => {
-          this.$router.push('/record')
-        }, 1000)
-      })
-      .catch((err) => {
-        this.status.loading = false
-      })
+      await apiRecordPost(this.formData)
+        .then(() => {
+          this.status.success = true
+          setTimeout(() => {
+            this.$router.push('/record')
+          }, 1000)
+        })
+        .catch(() => {
+          this.status.loading = false
+        })
     },
     async updateHandler () {
       const id = this.$route.params.id
       this.status.loading = true
-      await apiAccountPut(id, this.formData)
-      .then((res) => {
-        this.status.success = true
-        setTimeout(() => {
-          this.$router.push('/record')
-        }, 1000)
-      })
-      .catch((err) => {
-        this.status.loading = false
-      })
+      await apiRecordPut(id, this.formData)
+        .then(() => {
+          this.status.success = true
+          setTimeout(() => {
+            this.$router.push('/record')
+          }, 1000)
+        })
+        .catch(() => {
+          this.status.loading = false
+        })
     }
   }
 }

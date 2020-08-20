@@ -43,29 +43,29 @@ export default {
     async creatHandler () {
       this.status.loading = true
       await apiUserPost(this.formData)
-      .then((res) => {
-        this.status.success = true
-        setTimeout(() => {
-          this.$router.push('/user')
-        }, 1000)
-      })
-      .catch((err) => {
-        this.status.loading = false
-      })
+        .then(() => {
+          this.status.success = true
+          setTimeout(() => {
+            this.$router.push('/user')
+          }, 1000)
+        })
+        .catch(() => {
+          this.status.loading = false
+        })
     },
     async updateHandler () {
       const id = this.$route.params.id
       this.status.loading = true
       await apiUserPut(id, this.formData)
-      .then((res) => {
-        this.status.success = true
-        setTimeout(() => {
-          this.$router.push('/user')
-        }, 1000)
-      })
-      .catch((err) => {
-        this.status.loading = false
-      })
+        .then(() => {
+          this.status.success = true
+          setTimeout(() => {
+            this.$router.push('/user')
+          }, 1000)
+        })
+        .catch(() => {
+          this.status.loading = false
+        })
     }
   }
 }

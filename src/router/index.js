@@ -76,6 +76,11 @@ const routes = [
     path: '/record/edit/:id',
     name: 'RecordEdit',
     component: () => import('@/views/record/edit.vue')
+  },
+  {
+    path: '/record/type',
+    name: 'RecordType',
+    component: () => import('@/views/record-type/index.vue')
   }
 ]
 

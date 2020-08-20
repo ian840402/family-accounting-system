@@ -12,11 +12,13 @@
         :disable-sort="true"
         :loading="tableConfig.loading"
         hide-default-footer)
+        template(v-slot:item.is_income="{ value }")
+          div {{ value ? '收入' : '支出' }}
         template(v-slot:item.activity="{ item }")
           .activity-wrap
-            v-btn(:to="`account/info/${item.id}`") 檢視
-            v-btn(:to="`account/edit/${item.id}`") 編輯
-            v-btn(@click="deleteEvent(item.id)") 刪除
+            v-btn(:to="`record/info/${item.id}`") 檢視
+            v-btn(:to="`record/edit/${item.id}`") 編輯
+            v-btn(@click="deleteHandler(item.id)") 刪除
       v-pagination(
         v-model="pagination.currentPage"
         :length="pagination.lastPage"
@@ -35,9 +37,9 @@ export default {
       tableConfig: {
         header: [
           { text: '類型', value: 'is_income' },
-          { text: '分類', value: 'type_id' },
-          { text: '帳戶', value: 'account_id' },
-          { text: '使用者', value: 'user_id' },
+          { text: '分類', value: 'record_type.name' },
+          { text: '帳戶', value: 'account.name' },
+          { text: '使用者', value: 'user.name' },
           { text: '金額', value: 'money' },
           { text: '建立日期', value: 'createdAt' },
           { text: '更新日期', value: 'updatedAt' },
@@ -73,7 +75,7 @@ export default {
       this.pagination.lastPage = data.last_page
       this.tableConfig.loading = false
     },
-    async deleteEvent (id) {
+    async deleteHandler (id) {
       await apiRecordDelete(id)
       if (this.listData.length % this.pagination.perPage === 1 &&
         this.pagination.currentPage > 1) {
