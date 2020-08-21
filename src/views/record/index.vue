@@ -1,7 +1,8 @@
 <template lang="pug">
   .list-page
     h1.page-title 記帳管理
-    v-btn(to="/record/add") 新增
+    v-btn(to="/record/add?is_income=true") 新增收入
+    v-btn(to="/record/add?is_income=false") 新增支出
     v-btn(to="/record/type") 分類管理
     .list-table-wrap
       v-data-table(

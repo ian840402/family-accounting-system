@@ -1,12 +1,19 @@
 <template lang="pug">
   .edit-page
-    h1.page-title 帳戶管理 - {{ pageMode === 'RecordEdit' ? '編輯' : '新增' }}
+    h1.page-title 記帳管理 - {{ pageMode === 'RecordEdit' ? '編輯' : '新增' }}
     v-btn(@click="$router.go(-1)") 上一頁
     v-form
+      v-radio-group(v-model="formData.is_income" @change="getTypeData" :disabled="pageMode === 'RecordEdit'")
+        v-radio(label="收入" :value="true")
+        v-radio(label="支出" :value="false")
       v-select(v-model="formData.type_id" label="類型" :items="recordTypeData" item-text="name" item-value="id")
       v-select(v-model="formData.account_id" label="帳戶" :items="accountData" item-text="name" item-value="id")
       v-select(v-model="formData.user_id" label="使用者" :items="userData" item-text="name" item-value="id")
       v-text-field(v-model="formData.money" label="金額" placeholder="請輸入金額" prefix="$")
+      v-menu(v-model="status.dataPicker" :close-on-content-click="false" transition="scale-transition" offset-y min-width="290px" :nudge-right="40")
+        template(v-slot:activator="{ on, attrs }")
+          v-text-field(v-model="formData.date" label="日期"  placeholder="請選擇時間" readonly v-bind="attrs" v-on="on")
+        v-date-picker(v-model="formData.date" @input="status.dataPicker = false")
       v-textarea(v-model="formData.description" label="備註" placeholder="請輸入備註" :clearable="true" :dense="true")
       v-btn(v-if="pageMode === 'RecordEdit'" @click="updateHandler" :loading="status.loading") 儲存
       v-btn(v-else @click="creatHandler" :loading="status.loading") 儲存
@@ -30,10 +37,11 @@ export default {
         user_id: null,
         account_id: null,
         money: 0,
-        date: new Date(),
+        date: '',
         description: ''
       },
       status: {
+        dataPicker: false,
         success: false,
         loading: false
       }
@@ -45,12 +53,14 @@ export default {
     }
   },
   async created () {
+    if (this.$route.query.is_income) {
+      this.formData.is_income = this.$route.query.is_income === 'true'
+    }
     const { data: userData } = await apiUserGetAll()
     const { data: accountData } = await apiAccountGetAll()
-    const { data: recordTypeData } = await apiRecordTypeGetAll()
+    await this.getTypeData()
     this.userData = userData.data
     this.accountData = accountData.data
-    this.recordTypeData = recordTypeData.data
     if (this.pageMode === 'RecordEdit') await this.getData()
   },
   methods: {
@@ -58,6 +68,11 @@ export default {
       const id = this.$route.params.id
       const { data } = await apiRecordGet(id)
       this.formData = data
+    },
+    async getTypeData () {
+      const is_income = this.formData.is_income
+      const { data } = await apiRecordTypeGetAll({ is_income })
+      this.recordTypeData = data.data
     },
     async creatHandler () {
       this.status.loading = true

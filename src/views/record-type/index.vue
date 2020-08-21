@@ -1,17 +1,16 @@
 <template lang="pug">
   .list-page
     h1.page-title 類別管理
+    v-btn(@click="$router.go(-1)") 上一頁
     v-btn(@click="status.dialog = true") 新增
     .list-controll-block
-      v-radio-group(v-model="status.is_income")
+      v-radio-group(v-model="status.is_income" @change="getData")
         v-radio(label="收入" :value="true")
         v-radio(label="支出" :value="false")
     .list-table-wrap
       v-data-table(
         :headers="tableConfig.header"
         :items="listData"
-        :page.sync="pagination.currentPage"
-        :items-per-page="pagination.perPage"
         :disable-sort="true"
         :loading="tableConfig.loading"
         hide-default-footer)
@@ -28,12 +27,6 @@
               v-btn(@click="updateHandler(item)") 儲存
             v-btn(v-else @click="item.isEdit = true") 編輯
             v-btn(@click="deleteHandler(item.id)") 刪除
-      v-pagination(
-        v-model="pagination.currentPage"
-        :length="pagination.lastPage"
-        @previous="getData"
-        @input="getData"
-        @next="getData")
     v-dialog(v-model="status.dialog" persistent max-width="600px")
       v-card
         v-card-title 新增類別
@@ -59,17 +52,9 @@ export default {
         header: [
           { text: '名稱', value: 'name', width: 250 },
           { text: '類型', value: 'is_income' },
-          { text: '建立日期', value: 'createdAt' },
-          { text: '更新日期', value: 'updatedAt' },
           { text: '操作', value: 'activity' }
         ],
         loading: true
-      },
-      pagination: {
-        perPage: 10,
-        currentPage: 1,
-        totalPage: 0,
-        lastPage: 1
       },
       formData: {
         name: '',
@@ -85,8 +70,7 @@ export default {
   computed: {
     apiParams () {
       return {
-        page_size: this.pagination.perPage,
-        page: this.pagination.currentPage
+        is_income: this.status.is_income
       }
     }
   },
@@ -99,8 +83,6 @@ export default {
       const { data } = await apiRecordTypeGetAll(this.apiParams)
       data.data.forEach((item) => { item.isEdit = false })
       this.listData = data.data
-      this.pagination.totalPage = data.total
-      this.pagination.lastPage = data.last_page
       this.tableConfig.loading = false
     },
     async createHandler () {
@@ -125,10 +107,6 @@ export default {
     },
     async deleteHandler (id) {
       await apiRecordTypeDelete(id)
-      if (this.listData.length % this.pagination.perPage === 1 &&
-        this.pagination.currentPage > 1) {
-        this.pagination.currentPage--
-      }
       await this.getData()
     },
     initFormData () {
