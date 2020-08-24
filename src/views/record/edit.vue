@@ -6,10 +6,10 @@
       v-radio-group(v-model="formData.is_income" @change="getTypeData" :disabled="pageMode === 'RecordEdit'")
         v-radio(label="收入" :value="true")
         v-radio(label="支出" :value="false")
+      v-text-field(v-model="formData.money" label="金額" placeholder="請輸入金額" prefix="$")
       v-select(v-model="formData.type_id" label="類型" :items="recordTypeData" item-text="name" item-value="id")
       v-select(v-model="formData.account_id" label="帳戶" :items="accountData" item-text="name" item-value="id")
       v-select(v-model="formData.user_id" label="使用者" :items="userData" item-text="name" item-value="id")
-      v-text-field(v-model="formData.money" label="金額" placeholder="請輸入金額" prefix="$")
       v-menu(v-model="status.dataPicker" :close-on-content-click="false" transition="scale-transition" offset-y min-width="290px" :nudge-right="40")
         template(v-slot:activator="{ on, attrs }")
           v-text-field(v-model="formData.date" label="日期"  placeholder="請選擇時間" readonly v-bind="attrs" v-on="on")
@@ -24,6 +24,7 @@
 import { apiRecordGet, apiRecordPost, apiRecordPut, apiRecordTypeGetAll } from '@/api/record'
 import { apiAccountGetAll } from '@/api/account'
 import { apiUserGetAll } from '@/api/user'
+import moment from 'moment'
 
 export default {
   data () {
@@ -37,7 +38,7 @@ export default {
         user_id: null,
         account_id: null,
         money: 0,
-        date: '',
+        date: moment().format('YYYY-MM-DD'),
         description: ''
       },
       status: {
@@ -53,9 +54,6 @@ export default {
     }
   },
   async created () {
-    if (this.$route.query.is_income) {
-      this.formData.is_income = this.$route.query.is_income === 'true'
-    }
     const { data: userData } = await apiUserGetAll()
     const { data: accountData } = await apiAccountGetAll()
     await this.getTypeData()
@@ -67,11 +65,18 @@ export default {
     async getData () {
       const id = this.$route.params.id
       const { data } = await apiRecordGet(id)
-      this.formData = data
+      data.date = moment(data.date).format('YYYY-MM-DD')
+      this.formData.is_income = data.is_income
+      this.formData.type_id = data.record_type.id
+      this.formData.user_id = data.user.id
+      this.formData.account_id = data.account.id
+      this.formData.money = data.money
+      this.formData.date = data.date
+      this.formData.description = data.description
     },
     async getTypeData () {
-      const is_income = this.formData.is_income
-      const { data } = await apiRecordTypeGetAll({ is_income })
+      const isIncome = this.formData.is_income
+      const { data } = await apiRecordTypeGetAll({ isIncome })
       this.recordTypeData = data.data
     },
     async creatHandler () {

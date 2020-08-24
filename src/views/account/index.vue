@@ -35,8 +35,7 @@ export default {
         header: [
           { text: '帳戶名稱', value: 'name' },
           { text: '銀行', value: 'bank' },
-          { text: '建立日期', value: 'createdAt' },
-          { text: '更新日期', value: 'updatedAt' },
+          { text: '銀行帳戶', value: 'bank_account' },
           { text: '操作', value: 'activity' }
         ],
         loading: true

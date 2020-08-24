@@ -21,16 +21,16 @@ export default {
           path: '/dashboard'
         },
         {
+          name: '記帳管理',
+          path: '/record'
+        },
+        {
           name: '帳戶管理',
           path: '/account'
         },
         {
           name: '使用者管理',
           path: '/user'
-        },
-        {
-          name: '記帳管理',
-          path: '/record'
         }
       ]
     }

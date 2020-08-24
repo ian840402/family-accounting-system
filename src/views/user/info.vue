@@ -9,10 +9,17 @@
       .info-items
         .item-title 備註：
         .item-value {{ infoData.description }}
+      .info-items
+        .item-title 建立日期：
+        .item-value {{ infoData.created_at }}
+      .info-items
+        .item-title 更新日期：
+        .item-value {{ infoData.updated_at }}
 </template>
 
 <script>
 import { apiUserGet } from '@/api/user'
+import moment from 'moment'
 
 export default {
   data () {
@@ -25,7 +32,10 @@ export default {
   },
   methods: {
     async getData () {
-      const { data } = await apiUserGet(this.$route.params.id)
+      const id = this.$route.params.id
+      const { data } = await apiUserGet(id)
+      data.created_at = moment(data.created_at).format('YYYY-MM-DD HH:mm')
+      data.updated_at = moment(data.updated_at).format('YYYY-MM-DD HH:mm')
       this.infoData = data
     }
   }

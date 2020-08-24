@@ -1,8 +1,7 @@
 <template lang="pug">
   .list-page
     h1.page-title 記帳管理
-    v-btn(to="/record/add?is_income=true") 新增收入
-    v-btn(to="/record/add?is_income=false") 新增支出
+    v-btn(to="/record/add") 新增
     v-btn(to="/record/type") 分類管理
     .list-table-wrap
       v-data-table(
@@ -30,6 +29,7 @@
 
 <script>
 import { apiRecordGetAll, apiRecordDelete } from '@/api/record'
+import numberFormat from '@/utils/number-with-comma'
 
 export default {
   data () {
@@ -38,12 +38,9 @@ export default {
       tableConfig: {
         header: [
           { text: '類型', value: 'is_income' },
+          { text: '金額', value: 'money' },
           { text: '分類', value: 'record_type.name' },
           { text: '帳戶', value: 'account.name' },
-          { text: '使用者', value: 'user.name' },
-          { text: '金額', value: 'money' },
-          { text: '建立日期', value: 'createdAt' },
-          { text: '更新日期', value: 'updatedAt' },
           { text: '操作', value: 'activity' }
         ],
         loading: true
@@ -71,6 +68,9 @@ export default {
     async getData () {
       this.tableConfig.loading = true
       const { data } = await apiRecordGetAll(this.apiParams)
+      data.data.forEach((item) => {
+        item.money = numberFormat(item.money)
+      })
       this.listData = data.data
       this.pagination.totalPage = data.total
       this.pagination.lastPage = data.last_page

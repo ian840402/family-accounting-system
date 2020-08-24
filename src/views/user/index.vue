@@ -34,8 +34,6 @@ export default {
       tableConfig: {
         header: [
           { text: '使用者', value: 'name' },
-          { text: '建立日期', value: 'createdAt' },
-          { text: '更新日期', value: 'updatedAt' },
           { text: '操作', value: 'activity' }
         ],
         loading: true
