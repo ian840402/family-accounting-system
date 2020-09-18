@@ -32,7 +32,7 @@
 <script>
 import { apiRecordGet } from '@/api/record'
 import numberFormat from '@/utils/number-with-comma'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 export default {
   data () {
@@ -52,8 +52,8 @@ export default {
       const id = this.$route.params.id
       const { data } = await apiRecordGet(id)
       data.money = numberFormat(data.money)
-      data.created_at = moment(data.created_at).format('YYYY-MM-DD HH:mm')
-      data.updated_at = moment(data.updated_at).format('YYYY-MM-DD HH:mm')
+      data.created_at = dayjs(data.created_at).format('YYYY-MM-DD HH:mm')
+      data.updated_at = dayjs(data.updated_at).format('YYYY-MM-DD HH:mm')
       this.infoData = data
     }
   }

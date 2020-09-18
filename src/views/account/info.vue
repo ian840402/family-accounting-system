@@ -31,7 +31,7 @@
 
 <script>
 import { apiAccountGet } from '@/api/account'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 export default {
   data () {
@@ -48,8 +48,8 @@ export default {
     async getData () {
       const id = this.$route.params.id
       const { data } = await apiAccountGet(id)
-      data.created_at = moment(data.created_at).format('YYYY-MM-DD HH:mm')
-      data.updated_at = moment(data.updated_at).format('YYYY-MM-DD HH:mm')
+      data.created_at = dayjs(data.created_at).format('YYYY-MM-DD HH:mm')
+      data.updated_at = dayjs(data.updated_at).format('YYYY-MM-DD HH:mm')
       this.infoData = data
     }
   }

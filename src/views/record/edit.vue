@@ -24,7 +24,7 @@
 import { apiRecordGet, apiRecordPost, apiRecordPut, apiRecordTypeGetAll } from '@/api/record'
 import { apiAccountGetAll } from '@/api/account'
 import { apiUserGetAll } from '@/api/user'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 export default {
   data () {
@@ -38,7 +38,7 @@ export default {
         user_id: null,
         account_id: null,
         money: 0,
-        date: moment().format('YYYY-MM-DD'),
+        date: dayjs().format('YYYY-MM-DD'),
         description: ''
       },
       status: {
@@ -65,7 +65,7 @@ export default {
     async getData () {
       const id = this.$route.params.id
       const { data } = await apiRecordGet(id)
-      data.date = moment(data.date).format('YYYY-MM-DD')
+      data.date = dayjs(data.date).format('YYYY-MM-DD')
       this.formData.is_income = data.is_income
       this.formData.type_id = data.record_type.id
       this.formData.user_id = data.user.id

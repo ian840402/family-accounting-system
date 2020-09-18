@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 export default {
   data () {
     return {
-      today: moment().format('YYYY/MM/DD')
+      today: dayjs().format('YYYY/MM/DD')
     }
   }
 }
